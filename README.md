@@ -68,11 +68,12 @@ npm run lint     # run Oxlint
 ```
 profile-card/
 ├── public/
+│   ├── avatar.png            ← demo image bundled with the app
 │   └── favicon.svg
 ├── src/
 │   ├── components/
 │   │   └── ProfileCard.jsx   ← the component
-│   ├── App.jsx               ← demo host
+│   ├── App.jsx               ← demo host (renders the Peter Parker card)
 │   ├── index.css             ← Tailwind directives + fonts
 │   └── main.jsx              ← entry
 ├── index.html
@@ -91,9 +92,9 @@ profile-card/
 import ProfileCard from "./components/ProfileCard";
 
 <ProfileCard
-  name="Ada Lovelace"
-  role="Lead Engineer · GemNexus"
-  avatarUrl="https://i.pravatar.cc/200?img=47"
+  name="Peter Parker"
+  role="Best Actor · Marvel"
+  avatarUrl="/avatar.png"
 />
 ```
 
@@ -101,7 +102,34 @@ import ProfileCard from "./components/ProfileCard";
 |---|---|---|---|
 | `name` | `string` | yes | Displayed as the heading and used in the avatar's alt text. |
 | `role` | `string` | yes | Shown under the name. |
-| `avatarUrl` | `string` | yes | Source URL for the avatar image. Provide a real image URL — the alt text assumes it depicts the named person. |
+| `avatarUrl` | `string` | yes | Source URL for the avatar image. Use a public URL (`https://…`) or a path from the project root (`/avatar.png` for a file in `public/`). The alt text assumes the image depicts the named person. |
+
+> ⚠️ **Path notes for `avatarUrl`**
+> - `/avatar.png` → references `public/avatar.png`. Use forward slashes — browsers treat backslashes inconsistently.
+> - `https://i.pravatar.cc/200?img=47` → references an external avatar service.
+> - `./avatar.png` → **don't** use. Vite's public‑asset pipeline prefers imports or absolute paths from the root.
+
+### Demo
+
+The included `App.jsx` wires up the component with a bundled asset:
+
+```jsx
+import ProfileCard from "./components/ProfileCard";
+
+export default function App() {
+  return (
+    <main className="min-h-screen bg-slate-50 grid place-items-center px-4 py-10 font-body">
+      <ProfileCard
+        name="Peter Parker"
+        role="Best Actor · Marvel"
+        avatarUrl="/avatar.png"
+      />
+    </main>
+  );
+}
+```
+
+To swap in a different demo, just change the three props — the card handles everything else.
 
 The component owns its own loading state and does not accept props to
 override the fetched bio or network behaviour — keep it small and self‑contained.
@@ -153,8 +181,8 @@ all other rules.
 ## ✅ Reviewer checklist
 
 - [ ] `npm install && npm run dev` boots cleanly
-- [ ] Card renders with the three required props
-- [ ] Avatar `alt` contains the actual name (`Portrait of …`)
+- [ ] Card renders Peter Parker with the bundled `public/avatar.png`
+- [ ] Avatar `alt` contains the actual name (`Portrait of Peter Parker`)
 - [ ] Tab through — every button shows a visible focus ring
 - [ ] Narrow width (≤ 360 px) is still readable, no horizontal scroll
 - [ ] Throttle network to offline → error state appears
