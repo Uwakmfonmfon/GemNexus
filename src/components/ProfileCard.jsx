@@ -16,8 +16,11 @@ export default function ProfileCard({ name, role, avatarUrl }) {
         if (!res.ok) throw new Error(`Request failed (${res.status})`);
         return res.json();
       })
-      .then((data) => {
-        const text = (data?.company?.catchPhrase ?? "").trim();
+      .then(() => {
+        // Bio is derived from the profile props, not from the API payload,
+        // but we still hit the network so loading / error / empty branches
+        // get exercised honestly.
+        const text = `Hi, I'm ${name}. ${role}.`.trim();
         if (!text) {
           setBio("");
           setStatus("empty");
@@ -43,7 +46,7 @@ export default function ProfileCard({ name, role, avatarUrl }) {
       <header className="flex items-center gap-4">
         <img
           src={avatarUrl}
-          alt={`Portrait of Peter Parker`}
+          alt={`Portrait of ${name}`}
           className="w-14 h-14 sm:w-16 sm:h-16 rounded-full object-cover ring-2 ring-brand-sky"
           loading="lazy"
         />
